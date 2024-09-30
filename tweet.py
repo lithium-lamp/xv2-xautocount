@@ -6,7 +6,30 @@ import hmac
 import hashlib
 import base64
 import urllib.parse
+import argparse
 from decouple import config
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--text', action="store", dest='text', default='')
+parser.add_argument('--crudtype', action="store", dest='crudtype', default='')
+parser.add_argument('--tweetid', action="store", dest='tweetid', default='')
+
+args = parser.parse_args()
+
+def validCrudType(crudtype):
+    switcher = {
+        "POST": True,
+        "GET": True,
+        "DELETE": True,
+        "UPDATE": True,
+    }
+
+    return switcher.get(crudtype, False)
+
+if validCrudType(args.crudtype) == False:
+    print("Invalid crudtype ", args.crudtype)
+    exit(1)
 
 # Consumer keys
 TOKEN = config('TOKEN')
@@ -36,11 +59,6 @@ params = {
     'oauth_nonce': NONCE,
     'oauth_version': OAUTH_VERSION
 }
-
-# POST body data
-payload = json.dumps({
-  "text": "This is some text in my tweet"
-})
 
 # Function to percent-encode parameters
 def percent_encode(s):
@@ -74,7 +92,7 @@ oauth_params = {
     'oauth_version': OAUTH_VERSION,
 }
 
-base_string = create_base_string('POST', URL, oauth_params)
+base_string = create_base_string(args.crudtype, URL, oauth_params)
 
 signing_key = create_signing_key(TOKEN_SECRET, ACCESS_TOKEN_SECRET)
 
@@ -93,7 +111,21 @@ headers = {
     'Authorization': authorization_header
 }
 
-conn.request("POST", "/2/tweets", payload, headers)
-res = conn.getresponse()
-data = res.read()
-print(data.decode("utf-8"))
+if args.crudtype == "POST":
+    # POST body data
+    payload = json.dumps({
+    "text": args.text
+    })
+
+    conn.request("POST", "/2/tweets", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
+
+if args.crudtype == "DELETE":
+    # DELETE post
+
+    conn.request("DELETE", "/2/tweets/" + args.tweetid, '', headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))
