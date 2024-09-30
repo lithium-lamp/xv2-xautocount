@@ -92,7 +92,13 @@ oauth_params = {
     'oauth_version': OAUTH_VERSION,
 }
 
-base_string = create_base_string(args.crudtype, URL, oauth_params)
+base_string = ""
+
+if (args.crudtype == "POST"):
+    base_string = create_base_string(args.crudtype, URL, oauth_params)
+
+if (args.crudtype == "DELETE"):
+    base_string = create_base_string(args.crudtype, f"{URL}/{args.tweetid}", oauth_params)
 
 signing_key = create_signing_key(TOKEN_SECRET, ACCESS_TOKEN_SECRET)
 
@@ -125,7 +131,7 @@ if args.crudtype == "POST":
 if args.crudtype == "DELETE":
     # DELETE post
 
-    conn.request("DELETE", "/2/tweets/" + args.tweetid, '', headers)
+    conn.request("DELETE", f"/2/tweets/{args.tweetid}", '', headers)
     res = conn.getresponse()
     data = res.read()
     print(data.decode("utf-8"))
