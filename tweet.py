@@ -17,20 +17,6 @@ parser.add_argument('--tweetid', action="store", dest='tweetid', default='')
 
 args = parser.parse_args()
 
-def validCrudType(crudtype):
-    switcher = {
-        "POST": True,
-        "GET": True,
-        "DELETE": True,
-        "UPDATE": True,
-    }
-
-    return switcher.get(crudtype, False)
-
-if validCrudType(args.crudtype) == False:
-    print("Invalid crudtype ", args.crudtype)
-    exit(1)
-
 # Consumer keys
 TOKEN = config('TOKEN')
 TOKEN_SECRET = config('TOKEN_SECRET')
@@ -49,16 +35,6 @@ OAUTH_VERSION = "1.0"
 
 # Twitter API endpoint
 URL = "https://api.twitter.com/2/tweets"
-
-# Parameters for the OAuth signature
-params = {
-    'oauth_consumer_key': TOKEN,
-    'oauth_token': ACCESS_TOKEN,
-    'oauth_signature_method': HMAC_METHOD,
-    'oauth_timestamp': TIMESTAMP,
-    'oauth_nonce': NONCE,
-    'oauth_version': OAUTH_VERSION
-}
 
 # Function to percent-encode parameters
 def percent_encode(s):
@@ -94,11 +70,19 @@ oauth_params = {
 
 base_string = ""
 
-if (args.crudtype == "POST"):
-    base_string = create_base_string(args.crudtype, URL, oauth_params)
-
-if (args.crudtype == "DELETE"):
-    base_string = create_base_string(args.crudtype, f"{URL}/{args.tweetid}", oauth_params)
+if args.crudtype == "POST":
+    if (args.text == ''):
+        print("Text must be provided")
+        exit(1)
+    base_string = create_base_string("POST", URL, oauth_params)
+elif args.crudtype == "DELETE":
+    if (args.tweetid == ''):
+        print("Tweet id must be provided")
+        exit(1)
+    base_string = create_base_string("DELETE", f"{URL}/{args.tweetid}", oauth_params)
+else:
+    print("Invalid crudtype ", args.crudtype)
+    exit(1)
 
 signing_key = create_signing_key(TOKEN_SECRET, ACCESS_TOKEN_SECRET)
 
