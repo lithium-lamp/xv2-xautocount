@@ -11,20 +11,38 @@ from decouple import config
 
 parser = argparse.ArgumentParser()
 
+parser.add_argument('--user', action="store", dest='user', default='')
 parser.add_argument('--text', action="store", dest='text', default='')
 parser.add_argument('--crudtype', action="store", dest='crudtype', default='')
 parser.add_argument('--tweetid', action="store", dest='tweetid', default='')
 
 args = parser.parse_args()
 
-# Consumer keys
-TOKEN = config('TOKEN')
-TOKEN_SECRET = config('TOKEN_SECRET')
+TOKEN = ''
+TOKEN_SECRET = ''
+ACCESS_TOKEN = ''
+ACCESS_TOKEN_SECRET = ''
 
-#Access keys
-ACCESS_TOKEN = config('ACCESS_TOKEN')
-ACCESS_TOKEN_SECRET = config('ACCESS_TOKEN_SECRET')
+if args.user == 'xautocount':
+    # Consumer keys
+    TOKEN = config('xautocount_TOKEN')
+    TOKEN_SECRET = config('xautocount_TOKEN_SECRET')
 
+    #Access keys
+    ACCESS_TOKEN = config('xautocount_ACCESS_TOKEN')
+    ACCESS_TOKEN_SECRET = config('xautocount_ACCESS_TOKEN_SECRET')
+elif args.user == '_anvandarnamn':
+    # Consumer keys
+    TOKEN = config('anvandarnamn_TOKEN')
+    TOKEN_SECRET = config('anvandarnamn_TOKEN_SECRET')
+
+    #Access keys
+    ACCESS_TOKEN = config('anvandarnamn_ACCESS_TOKEN')
+    ACCESS_TOKEN_SECRET = config('anvandarnamn_ACCESS_TOKEN_SECRET')
+else:
+    print("Input user")
+    exit(1)
+    
 # Timestamp and Nonce
 TIMESTAMP = str(int(time.time()))
 NONCE = ''.join([chr(random.randint(97, 122)) for i in range(32)])
