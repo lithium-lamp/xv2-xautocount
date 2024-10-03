@@ -3,7 +3,8 @@ import http.client
 import json
 from decouple import config
 
-BASEPATH = config('BASEPATH')
+PYTHONPATH = config('PYTHON_PATH')
+TWEETPATH = config('TWEET_PATH')
 KEY = config('WEATHER_KEY')
 location = "Stockholm"
 
@@ -87,8 +88,8 @@ fulltext += f"The wind Speed is {wind_speed} km/h\n"
 print(fulltext)
 
 command = [
-    f"{BASEPATH}/xv2/.venv/bin/python",
-    "tweet.py",
+    f"{PYTHONPATH}",
+    f"{TWEETPATH}",
     "--user=xautocount",
     f'--text={fulltext}',
     '--crudtype=POST'
