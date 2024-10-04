@@ -7,6 +7,8 @@ SPOTIFY_BEARER = config('SPOTIFY_BEARER')
 PYTHONPATH = config('PYTHON_PATH')
 TWEETPATH = config('TWEET_PATH')
 
+print(PYTHONPATH, TWEETPATH)
+
 conn = http.client.HTTPSConnection("api.spotify.com")
 
 payload = ''
@@ -20,7 +22,7 @@ res = conn.getresponse()
 data = res.read()
 
 decoded_data = data.decode("utf-8")
-#print(decoded_data)
+print(decoded_data)
 
 json_data = json.loads(decoded_data)
 all_items = json_data.get('items')
