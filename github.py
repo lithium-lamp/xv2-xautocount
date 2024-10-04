@@ -48,7 +48,22 @@ all_items = json_data.get('data').get('user').get('contributionsCollection').get
 recentweek = all_items[len(all_items) - 1].get('contributionDays')
 today = recentweek[len(recentweek) - 1]
 
-fulltext = "Today I made " + str(today.get('contributionCount')) + " contributions on github!"
+cont_count = today.get('contributionCount')
+
+fulltext = "Today I made " + str(cont_count) + " contributions on github."
+
+if (cont_count == 0):
+    fulltext += " Aww man 😢"
+elif (cont_count == 1):
+    fulltext = "Today I made 1 contribution on github. That is okay I suppose 🙂"
+elif (cont_count <= 3):
+    fulltext += " Hmm yeah that is pretty good 😮"
+elif (cont_count <= 6):
+    fulltext += " Oh wow 😲"
+elif (cont_count <= 9):
+    fulltext += " That's a lot for one day 😶‍🌫️"
+else:
+    fulltext = "I made " + str(cont_count) + " contributions today??? Seriously?? 🤯"
 
 command = [
     f"{PYTHONPATH}",
